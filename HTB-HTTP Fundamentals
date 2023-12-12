@@ -2,3 +2,11 @@ Comandos do cURL:
 
 curl -i http://<SERVER_IP>:<PORT>/ <-- Verificar os headers
 curl -u admin:admin http://<SERVER_IP>:<PORT>/ <-- Passar usuário e senha
+curl http://admin:admin@<SERVER_IP>:<PORT>/ <-- Passando as credenciais diretamente na URL
+curl -H 'Authorization: Basic YWRtaW46YWRtaW4=' http://<SERVER_IP>:<PORT>/ <-- Utilizando autorização basica manualmente onde usuário e senha estão em base64
+curl 'http://<SERVER_IP>:<PORT>/search.php?search=le' -H 'Authorization: Basic YWRtaW46YWRtaW4=' <-- Acessando uma pagina responsiva.
+curl -X POST -d 'username=admin&password=admin' http://<SERVER_IP>:<PORT>/ <-- Encaminhando post via Curl nesse caso aqui podemos utilizar também -L para seguir os redirects
+curl -X POST -d 'username=admin&password=admin' http://<SERVER_IP>:<PORT>/ -i
+curl -b 'PHPSESSID=c1nsa6op7vtk7kdis7bcnbadf1' http://<SERVER_IP>:<PORT>/ <-- Para configurarmos o cookie
+
+
