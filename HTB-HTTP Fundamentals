@@ -1,0 +1,4 @@
+Comandos do cURL:
+
+curl -i http://<SERVER_IP>:<PORT>/ <-- Verificar os headers
+curl -u admin:admin http://<SERVER_IP>:<PORT>/ <-- Passar usuário e senha
