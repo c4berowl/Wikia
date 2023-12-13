@@ -8,5 +8,6 @@ curl 'http://<SERVER_IP>:<PORT>/search.php?search=le' -H 'Authorization: Basic Y
 curl -X POST -d 'username=admin&password=admin' http://<SERVER_IP>:<PORT>/ <-- Encaminhando post via Curl nesse caso aqui podemos utilizar também -L para seguir os redirects
 curl -X POST -d 'username=admin&password=admin' http://<SERVER_IP>:<PORT>/ -i
 curl -b 'PHPSESSID=c1nsa6op7vtk7kdis7bcnbadf1' http://<SERVER_IP>:<PORT>/ <-- Para configurarmos o cookie
-
+curl -X POST -d '{"search":"flag"}' -b 'PHPSESSID=vgps0t7t87drsom5nsv8iirk17' -H 'Content-Type: application/json' http://94.237.62.147:46144/search.php <-- Login através do metodo post com um cookie autenticado e aplicação json
+curl -s http://<SERVER_IP>:<PORT>/api.php/city/london | jq <-- Realizando uma pesquisa em API com o JSON já formatado com jq
 
