@@ -1,0 +1,2 @@
+diagnose sniffer packet any "host x.x.x.x and port x" 
+get route info routing-table details "o ip que precissa"
