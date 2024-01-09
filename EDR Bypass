@@ -1,3 +1,11 @@
+https://github.com/klezVirus/inceptor 
+https://klezvirus.github.io/RedTeaming/AV_Evasion/CodeExeNewDotNet/ 
+https://www.mdsec.co.uk/2019/03/silencing-cylance-a-case-study-in-modern-edrs/ 
+https://ajpc500.github.io/nim/Shellcode-Injection-using-Nim-and-Syscalls/ 
+https://s3cur3th1ssh1t.github.io/A-tale-of-EDR-bypass-methods/ 
+https://www.horangi.com/blog/bypassing-crowdstrike-falcon 
+https://www.optiv.com/insights/source-zero/blog/sacrificing-suspended-processes 
+
 #Procedimento para bypass de EDR 
 #Antes de tudo, criar um usuário local na maquina e adiciona-lo ao grupo de administradores locais 
 
