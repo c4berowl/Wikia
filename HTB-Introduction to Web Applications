@@ -1,1 +1,25 @@
+Java Script
 
+Site para executar JS online https://jsfiddle.net/
+
+#Exemplo de DOM XSS ataque
+
+#"><img src=/ onerror=alert(document.cookie)>
+
+#Prevention
+#Though there should be measures on the back end to detect and filter user input, it is also always important to filter and sanitize user input on the front end before it reaches the back end, and especially if this code may be displayed directly on the client-side without communicating with the back end. Two main controls must be applied when accepting user input:
+
+Type	        Description
+Sanitization	Removing special characters and non-standard characters from user input before displaying it or storing it.
+Validation	  Ensuring that submitted user input matches the expected format (i.e., submitted email matched email format)
+
+https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html
+
+# Tipos de stacks para backend
+
+Combinations	Components
+LAMP	Linux, Apache, MySQL, and PHP.
+WAMP	Windows, Apache, MySQL, and PHP.
+WINS	Windows, IIS, .NET, and SQL Server
+MAMP	macOS, Apache, MySQL, and PHP.
+XAMPP	Cross-Platform, Apache, MySQL, and PHP/PERL.
