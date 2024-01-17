@@ -52,5 +52,9 @@ ffuf -w /opt/useful/SecLists/Discovery/Web-Content/directory-list-2.3-small.txt:
 
 #  Recursive fuzzing
 
+ffuf -w /opt/useful/SecLists/Discovery/Web-Content/directory-list-2.3-small.txt:FUZZ -u http://SERVER_IP:PORT/FUZZ -recursion -recursion-depth 1 -e .php -v
+# -v to output the full URLs
+
+# DNS Records
 
 
