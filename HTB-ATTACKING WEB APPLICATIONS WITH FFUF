@@ -85,3 +85,6 @@ FILTER OPTIONS:
   -fw              Filter by amount of words in response. Comma separated list of word counts and ranges
 <...SNIP...>
 
+ffuf -w /opt/useful/SecLists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ -u http://academy.htb:PORT/ -H 'Host: FUZZ.academy.htb' -fs 900
+
+# Parameter Fuzzing - GET
