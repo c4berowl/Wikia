@@ -1,1 +1,10 @@
+# Sample of code vulnerable to LFI
 
+Code: php
+if (isset($_GET['language'])) {
+    include($_GET['language']);
+}
+
+# Outros parametros que podem ser vulneráveis
+
+include_once(), require(), require_once(), file_get_contents()
