@@ -378,4 +378,18 @@ https://github.com/OsandaMalith/LFiFreak
 
 https://github.com/mzfr/liffy
 
+# File Inclusion Prevention
 
+We can sanitize the user input to recursively remove any attempts of traversing directories, as follows:
+
+Code: php
+while(substr_count($input, '../', 0)) {
+    $input = str_replace('../', '', $input);
+};
+
+# Several configurations may also be utilized to reduce the impact of file inclusion vulnerabilities in case they occur.
+# For example, we should globally disable the inclusion of remote files. In PHP this can be done by setting allow_url_fopen and allow_url_include to Off.
+
+# Many languages often have a way to prevent accessing files outside of the web directory.
+# In PHP that can be done by adding open_basedir = /var/www in the php.ini file.
+# Furthermore, you should ensure that certain potentially dangerous modules are disabled, like PHP Expect mod_userdir.
