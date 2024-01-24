@@ -1,1 +1,133 @@
+# SQL Injection (SQLi)
 
+# Some of the essential features of a DBMS include:
+
+Feature	      Description
+Concurrency	  A real-world application might have multiple users interacting with it simultaneously. A DBMS makes sure that these concurrent interactions succeed without corrupting or losing any data.
+Consistency	  With so many concurrent interactions, the DBMS needs to ensure that the data remains consistent and valid throughout the database.
+Security	    DBMS provides fine-grained security controls through user authentication and permissions. This will prevent unauthorized viewing or editing of sensitive data.
+Reliability	  It is easy to backup databases and rolls them back to a previous state in case of data loss or a breach.
+Structured    Query Language	SQL simplifies user interaction with the database with an intuitive syntax supporting various operations.
+
+# Types of Databases
+
+# Relational Databases
+
+# A relational database is the most common type of database. It uses a schema, a template, to dictate the data structure stored in the database.
+# For example, we can imagine a company that sells products to its customers having some form of stored knowledge about where those products go, to whom, and in what quantity.
+# However, this is often done in the back-end and without obvious informing in the front-end. 
+
+# Non-relational Databases
+
+# A non-relational database (also called a NoSQL database) does not use tables, rows, and columns or prime keys, relationships, or schemas.
+# Instead, a NoSQL database stores data using various storage models, depending on the type of data stored.
+# Due to the lack of a defined structure for the database, NoSQL databases are very scalable and flexible.
+# Therefore, when dealing with datasets that are not very well defined and structured, a NoSQL database would be the best choice for storing such data.
+
+The above example can be represented using JSON as:
+
+Code: json
+{
+  "100001": {
+    "date": "01-01-2021",
+    "content": "Welcome to this web application."
+  },
+  "100002": {
+    "date": "02-01-2021",
+    "content": "This is the first post on this web app."
+  },
+  "100003": {
+    "date": "02-01-2021",
+    "content": "Reminder: Tomorrow is the ..."
+  }
+}
+
+# Intro to MySQL
+
+# This module introduces SQL injection through MySQL, and it is crucial to learn more about MySQL and SQL to understand how SQL injections work and utilize them properly.
+# Therefore, this section will cover some of MySQL/SQL's basics and syntax and examples used within MySQL/MariaDB databases.
+
+# Connecting to MySQL
+
+mysql -u root -h docker.hackthebox.eu -P 3306 -p 
+
+# Creating a database
+
+mysql> CREATE DATABASE users;
+
+mysql> SHOW DATABASES;
+
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
+| users              |
++--------------------+
+
+mysql> USE users;
+
+Database changed
+
+# Tables
+
+# DBMS stores data in the form of tables. A table is made up of horizontal rows and vertical columns.
+# The intersection of a row and a column is called a cell. Every table is created with a fixed set of columns, where each column is of a particular data type.
+
+Code: sql
+CREATE TABLE logins (
+    id INT,
+    username VARCHAR(100),
+    password VARCHAR(100),
+    date_of_joining DATETIME
+    );
+
+mysql> SHOW TABLES;
+
++-----------------+
+| Tables_in_users |
++-----------------+
+| logins          |
++-----------------+
+
+mysql> DESCRIBE logins;
+
++-----------------+--------------+
+| Field           | Type         |
++-----------------+--------------+
+| id              | int          |
+| username        | varchar(100) |
+| password        | varchar(100) |
+| date_of_joining | date         |
++-----------------+--------------+
+4 rows in set (0.00 sec)
+
+# Table Properties
+
+# Within the CREATE TABLE query, there are many properties that can be set for the table and each column.
+# For example, we can set the id column to auto-increment using the AUTO_INCREMENT keyword, which automatically increments the id by one every time a new item is added to the table:
+
+Code: sql
+    id INT NOT NULL AUTO_INCREMENT,
+
+Code: sql
+    username VARCHAR(100) UNIQUE NOT NULL,
+
+Code: sql
+    date_of_joining DATETIME DEFAULT NOW(),
+
+Code: sql
+    PRIMARY KEY (id)
+
+# The final CREATE TABLE query will be as follows:
+
+Code: sql
+CREATE TABLE logins (
+    id INT NOT NULL AUTO_INCREMENT,
+    username VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(100) NOT NULL,
+    date_of_joining DATETIME DEFAULT NOW(),
+    PRIMARY KEY (id)
+    );
