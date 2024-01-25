@@ -503,3 +503,6 @@ mysql> select * from logins where username != 'tom' AND id > 3 - 2;
 |  3 | john          | john123!   | 2020-07-03 12:03:57 |
 +----+---------------+------------+---------------------+
 2 rows in set (0.00 sec)
+
+SELECT * FROM titles WHERE emp_no > 10000 || title != 'engineer';
+
