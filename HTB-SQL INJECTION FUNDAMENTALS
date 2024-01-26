@@ -506,3 +506,22 @@ mysql> select * from logins where username != 'tom' AND id > 3 - 2;
 
 SELECT * FROM titles WHERE emp_no > 10000 || title != 'engineer';
 
+# Intro to SQL Injections
+
+# What is an Injection?
+
+# Injection occurs when an application misinterprets user input as actual code rather than a string, changing the code flow and executing it.
+# This can occur by escaping user-input bounds by injecting a special character like ('), and then writing code to be executed, like JavaScript code or SQL in SQL Injections.
+# Unless the user input is sanitized, it is very likely to execute the injected code and run it.
+
+# Codigo sem higienização
+
+Code: php
+$searchInput =  $_POST['findUser'];
+$query = "select * from logins where username like '%$searchInput'";
+$result = $conn->query($query);
+
+# In typical cases, the searchInput would be inputted to complete the query, returning the expected outcome. Any input we type goes into the following SQL query:
+
+select * from logins where username like '%$searchInput'
+
