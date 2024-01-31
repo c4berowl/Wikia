@@ -52,6 +52,10 @@ Android is based on the Linux Operating System, any linux commands will work her
 - Dalvik was the original runtime VM, and is still referenced to by the name Dalvik bytecode.
 -- Dalvik is not  utilized in modern Android OS, and has been replaced by the ART (Android Runtime)
 
+# Android identity and Access Management
+
+# Each application has its own user for the application
+
 
 
 
