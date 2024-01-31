@@ -41,3 +41,18 @@ Recon > Static Analysis > Dinamic Analysis > Reporting
 - Write report with both OWASP Top Ten (Web) and OWASP Top Ten (Mobile) in mind
 - Provide business with the criticality as well as steps to reproduce
 - Remember to mention the positive security implementations
+
+# Android Architecture
+
+Android is based on the Linux Operating System, any linux commands will work here. Also the permission model.
+
+# Dalvik vs the Android Runtime
+
+- Every application is run in a virtual machine know as the Android Runtime
+- Dalvik was the original runtime VM, and is still referenced to by the name Dalvik bytecode.
+-- Dalvik is not  utilized in modern Android OS, and has been replaced by the ART (Android Runtime)
+
+
+
+
+
