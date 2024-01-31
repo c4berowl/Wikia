@@ -1,1 +1,24 @@
+# Mobile Application Pentesting Process
 
+Recon > Static Analysis > Dinamic Analysis > Reporting
+
+# Recon:
+
+# Fing information about the company
+- Earnings Reports and press releases often contain info about mobile apps
+# Find the target app on the Play Store or Apple Store
+- Read reviews
+- Enumerate who created the app
+- Enumerate the different app versions and patch notes
+- Enumerate the company's other apps
+
+# Static Analysis
+
+# Reading the application code via manual or automated tools to assess the security
+- Looking for hardcoded strings, security misconfiguration, or additional targets extracted from the app
+
+# Static analysis will sometimes results in the pentesting process being triggered, especially additional enumeration or fingerprinting
+# Find a URL - Recon, enumerate, exploit etc.
+- Many companies use other API gateways/path for mobile apps vs the traditional website
+# Find an email/username - recon using phonebook.cz, etc.
+# Find a storage bucket - recon, enumerate with cloud_enum
