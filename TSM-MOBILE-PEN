@@ -22,3 +22,16 @@ Recon > Static Analysis > Dinamic Analysis > Reporting
 - Many companies use other API gateways/path for mobile apps vs the traditional website
 # Find an email/username - recon using phonebook.cz, etc.
 # Find a storage bucket - recon, enumerate with cloud_enum
+
+# Dynamic Analysis
+
+# Running the application and manipulating it
+- Intercepting traffic with proxies like burp suite/Proxyman
+- Dumping memory from the application to check for insecurely stored secrets
+- Checking local storage for files created at runtime
+- Breaking SSL Pinning at Runtime
+
+# Dynamic Analysis can often result in attacks related to the OWASP top Ten
+- SQL injection, Cross-site Scripting, IDOR, XXE, etc.
+- Note on XSS: you often will not get XSS in the mobile app itself, but sometimes this can affect the full version of the website.
+
