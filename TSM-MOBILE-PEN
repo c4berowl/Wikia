@@ -35,3 +35,9 @@ Recon > Static Analysis > Dinamic Analysis > Reporting
 - SQL injection, Cross-site Scripting, IDOR, XXE, etc.
 - Note on XSS: you often will not get XSS in the mobile app itself, but sometimes this can affect the full version of the website.
 
+# Reporting 
+
+- Often contains executive summary as well as specific vulnerabilities discovered
+- Write report with both OWASP Top Ten (Web) and OWASP Top Ten (Mobile) in mind
+- Provide business with the criticality as well as steps to reproduce
+- Remember to mention the positive security implementations
