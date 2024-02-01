@@ -89,4 +89,11 @@ Google kids spaces(Tablets only), usually vendor specific
 - This means an attacker can modify application functionality
 - The source code is available by using a tool like JADX-GUI or Apktool
 
+# Application signing
 
+- Since anyone could modify an application and publish it to the Play Store, how do we ensure it's integrity?
+R: PKI Public-key Infraestructure
+- Today there are three methods of verifying signatures:
+-- APK Signature scheme v1,2,3
+-- In addition, google implemented google play signing which adds unique signatures to the apps
+-- keytool, jarsigner, zipalign
