@@ -74,5 +74,12 @@ Can only be one guest user at a time
 # Kid Mode
 Google kids spaces(Tablets only), usually vendor specific
 
+# Android Architecture
 
+# Major Layers:
+- Linux Kernel
+- Hardware Abstraction Layer
+- Libraries (Native C or Android Runtime)
+- Java API Layer
+- System Apps
 
