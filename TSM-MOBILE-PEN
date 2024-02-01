@@ -56,7 +56,23 @@ Android is based on the Linux Operating System, any linux commands will work her
 
 # Each application has its own user for the application
 
+# Android Identity and Access Mgmt, Continued
 
+# Profiles
+Separated App Data, useful for things like BYOD
+Work Profile, Personal Profile, Always-on VPN
+
+# Primary User
+User created first time the fone is started, can only be removed by factory reset
+
+# Secondary User
+Additional users you can add to the device
+
+# Guest User
+Can only be one guest user at a time
+
+# Kid Mode
+Google kids spaces(Tablets only), usually vendor specific
 
 
 
