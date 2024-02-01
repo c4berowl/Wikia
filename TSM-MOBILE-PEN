@@ -83,4 +83,10 @@ Google kids spaces(Tablets only), usually vendor specific
 - Java API Layer
 - System Apps
 
+# Application Security and Signing
+
+- Every android application can be reverse-engineered, rebuilt, re-signed and re-run
+- This means an attacker can modify application functionality
+- The source code is available by using a tool like JADX-GUI or Apktool
+
 
