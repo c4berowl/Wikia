@@ -97,3 +97,18 @@ R: PKI Public-key Infraestructure
 -- APK Signature scheme v1,2,3
 -- In addition, google implemented google play signing which adds unique signatures to the apps
 -- keytool, jarsigner, zipalign
+
+# Instalação do Ambiente Windows
+
+Android SDK - https://developer.android.com/studio/releases/platform-tools
+APK Tool - https://ibotpeaches.github.io/Apktool/
+Android Studio - 
+
+# Instalação no Kali
+
+https://github.com/Dewalt-arch/pimpmykali
+
+Escolher a opção A - MAPT Course Setup
+
+# Emulator Setup
+
