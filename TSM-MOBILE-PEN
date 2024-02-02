@@ -112,3 +112,24 @@ Escolher a opção A - MAPT Course Setup
 
 # Emulator Setup
 
+# How to start ADB with port open on host machine Windows:
+
+adb -a nodaemon server
+# (if you receive an error that the port is already in use, kill the adb process - this will vary per your Operating System)
+
+taskkill /f /t /im adb.exe
+then run: adb -a nodaemon server
+# From the networked machine, or VM run the following command to connect to the emulator via the newly opened port:
+
+adb -H <host_machine_IP> -P 5037 shell
+
+# Summary of How to Pull APK From Play Store:
+
+# Download app from Play Store
+# In terminal issue the following commands:
+abd shell (this drops you into a shell on your emulator or physical phone)
+pm list packages | grep <insertIdentifier> (this will display the name of the package installed on the phone, in our case we did grep injured, copy result for step 5 below)
+pm path <insertpackagename> (list the file path of the package, copy the file path for step 7 below)
+exit (exit the adb shell)
+adb pull <insertPathToPackage> <insertNameOfNewFile>.apk (this will pull the apk from the file path on the phone and save it to whatever file name we want
+
