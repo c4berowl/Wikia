@@ -133,3 +133,30 @@ pm path <insertpackagename> (list the file path of the package, copy the file pa
 exit (exit the adb shell)
 adb pull <insertPathToPackage> <insertNameOfNewFile>.apk (this will pull the apk from the file path on the phone and save it to whatever file name we want
 
+# Android Manifest.xml
+
+- Where the basics of the application are defined:
+--minSDKVersion
+--Permissions
+--Activities
+--Content Providers
+
+# Permissions
+
+- Defines what data and hardware components the app needs access to:
+-- Camera
+-- Contacts
+-- Internet
+
+Full list
+https://developer.android.com/reference/android/Manifest.permission
+
+# Activities
+- Basically, UI elements or different "Screens" in the application
+-- Some activities need to be protected, examples:
+-- Account Details
+-- Money Transfer Screens
+-- Hidden Screens
+
+- Often performed through intent-filters
+- An exported="True" activity can be accessed from outside the application
