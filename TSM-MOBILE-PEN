@@ -177,4 +177,17 @@ https://developer.android.com/reference/android/Manifest.permission
 -Look for backup option set to true
 -Look for debug option set to true
 
+# Manual Static Analysis
+
+apktool d <target.apk>
+
+# How to Find Hardcoded String
+
+- Oftern Hardcoded strings can be found in resources/strings.xml
+- Hardcoded strings can also be found in activity source code
+- Threat Vector:
+- Login bypass(username/password, or client credentials)
+- URLs exposed (http/https)
+- API keys exposed
+- Firebase URLs (firebase.io)
 
