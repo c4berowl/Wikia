@@ -160,3 +160,21 @@ https://developer.android.com/reference/android/Manifest.permission
 
 - Often performed through intent-filters
 - An exported="True" activity can be accessed from outside the application
+
+# Content Providers
+
+- Utiliezed to server data from your application to other applications
+-- Sometimes used for sharing data between a bunch of related apps
+-- If content providers are exported, this can be very dangerous and expose data to any user or app on the device
+
+# Common application strings in the Manifest.xml
+
+-Look for permissions
+-Look for activities
+-Look for activities that can be exported (ObsÇ value needs to be set as true)
+-Look for providers with the exported value set to true
+-Look for API keys that might be encoded in the manifest
+-Look for backup option set to true
+-Look for debug option set to true
+
+
