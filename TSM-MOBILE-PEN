@@ -191,3 +191,14 @@ apktool d <target.apk>
 - API keys exposed
 - Firebase URLs (firebase.io)
 
+# AWS Bucket
+
+Tool called cloud_enum
+
+# Para acessar um bucket AWS, devemos utilizar o awscli com o ID e senha.
+
+aws configure --profile injuredandroid
+
+aws s3 ls s3://injuredandroid --profile injuredandroid
+
+
