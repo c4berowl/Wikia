@@ -203,5 +203,10 @@ aws s3 ls s3://injuredandroid --profile injuredandroid
 
 # Firebase enum and exploit
 
+firebaseenum
+
+python3 firebaseEnum.py -k injuredandroid
+
+
 
 
