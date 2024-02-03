@@ -201,4 +201,7 @@ aws configure --profile injuredandroid
 
 aws s3 ls s3://injuredandroid --profile injuredandroid
 
+# Firebase enum and exploit
+
+
 
