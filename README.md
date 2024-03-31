@@ -1,3 +1,5 @@
+# This is a personal respository for personal notes, use at will, I take not resposability.
+
 Instinct is a lie, told by a fearful body, hoping to be wrong.<br>
 Let go your earthly tether. Enter the void. Empty and become wind.<br>
 New growth cannot exist without first the destruction of the old.<br>
