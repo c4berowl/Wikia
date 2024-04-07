@@ -1,0 +1,1 @@
+xfreerdp /w:1336 /h:900 /u:<USERNAME> /v:<SERVER IP> /p:<PASSWORD> +clipboard
