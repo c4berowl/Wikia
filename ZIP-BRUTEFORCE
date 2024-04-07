@@ -1,0 +1,5 @@
+https://github.com/The404Hacking/ZIP-Password-BruteForcer
+
+/usr/sbin/rar2john flag.rar > hash
+
+/usr/sbin/zip2john flag.zip > hash
