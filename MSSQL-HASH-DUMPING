@@ -1,0 +1,11 @@
+# Obter hashes mdf
+
+https://blog.xpnsec.com/extracting-master-mdf-hashes/
+
+# Cracking mdf files with hashcat
+
+hashcat -m 1731 --force hash.txt C:\PATH\TO\LIST\wordlist.exe
+
+# Logar em database mssql via linux
+
+sqsh -h
