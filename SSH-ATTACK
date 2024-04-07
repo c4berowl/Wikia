@@ -1,0 +1,5 @@
+https://github.com/g0tmi1k/debian-ssh
+
+ssh-keygen -E md5 -lf key.pub
+
+ssh -vv -i <ssh key> bob@10.1.1.1 -oKexAlgorithms=+diffie-hellman-group1-sha1 oHostKeyAlgorithms=+ssh-dss
