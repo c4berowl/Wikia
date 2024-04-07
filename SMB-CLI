@@ -1,0 +1,4 @@
+smbclient -U '' -L \\\<SERVER IP>\\
+# Diretórios
+smbclient -U '' \\\<SERVER IP>\\<DIRECTORY>
+smbclient -U '<USERNAME>' \\\<SERVER IP>\\c$
