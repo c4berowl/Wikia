@@ -1,0 +1,47 @@
+https://github.com/twelvesec/port-forwarding
+
+# Chisel-Port-Forwarding
+
+https://github.com/twelvesec/port-forwarding
+
+# SSHUTTLE
+
+https://github.com/sshuttle/sshuttle
+
+# Em python2
+
+pip2.7 install sshuttle==0.78
+
+sudo ./venv/bin/sshuttle -e "ssh -oKexAlgorithms=+diffie-hellman-group1-sha1 -oHostKeyAlgorithms=+ssh-dss" -r USERNAME@<SERVER-IP> <NETWORK-TO-PIVOT>
+
+# Python3
+
+sshuttle -r USERNAME@<SERVER-IP> <NETWORK-TO-PIVOT>
+
+sshuttle --dns -vr user@yourserver.com 0/0 --ssh-cmd 'ssh -i /your/key/path.pem'
+
+# Chisel
+
+https://notes.benheater.com/books/network-pivoting/page/port-forwarding-with-chisel
+https://github.com/jpillora/chisel
+
+# Comandos necessários para rodar o Chisel
+
+chisel server -p 8001 --reverse
+
+.\chisel.exe client 10.1.1.1:8001 R:9001:socks
+
+# Alterar a porta do proxychains
+
+sudo nano /etc/proxychains.conf
+
+# SSH Local Portfoward
+
+https://www.ssh.com/academy/ssh/tunneling-example
+
+ssh -N -L 0.0.0.0:5555:10.1.1.1:5555 student@10.1.1.1
+ssh -N -L 0.0.0.0:1080:127.0.0.1:34023 student@10.1.1.1
+
+# Remote Na vitima
+
+ssh -R 4444:127.0.0.1:3306 kali@10.1.1.1
